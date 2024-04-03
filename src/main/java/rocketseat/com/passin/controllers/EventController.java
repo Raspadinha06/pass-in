@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import rocketseat.com.passin.dtos.events.EventIdDTO;
-import rocketseat.com.passin.dtos.events.EventRequestDTO;
-import rocketseat.com.passin.dtos.events.EventResponseDTO;
-import rocketseat.com.passin.dtos.events.attendees.AttendeeListResponseDTO;
+import rocketseat.com.passin.dtos.attendee.AttendeeIdDTO;
+import rocketseat.com.passin.dtos.attendee.AttendeeRequestDTO;
+import rocketseat.com.passin.dtos.event.EventIdDTO;
+import rocketseat.com.passin.dtos.event.EventRequestDTO;
+import rocketseat.com.passin.dtos.event.EventResponseDTO;
+import rocketseat.com.passin.dtos.attendee.AttendeeListResponseDTO;
 import rocketseat.com.passin.services.AttendeeService;
 import rocketseat.com.passin.services.EventService;
 
@@ -24,6 +26,12 @@ public class EventController{
         return ResponseEntity.ok(event);
     }
 
+    @GetMapping("/attendees/{eventId}")
+    public ResponseEntity<AttendeeListResponseDTO> getEventAttendees(@PathVariable String eventId){
+        AttendeeListResponseDTO attendeeListResponse = this.attendeeService.getEventAttendees(eventId);
+        return ResponseEntity.ok(attendeeListResponse);
+    }
+
     @PostMapping
     public ResponseEntity<EventIdDTO> createEvent(@RequestBody EventRequestDTO body, UriComponentsBuilder uriComponentsBuilder){
         EventIdDTO eventIdDTO = this.eventService.createEvent(body);
@@ -33,9 +41,13 @@ public class EventController{
         return ResponseEntity.created(uri).body(eventIdDTO);
     }
 
-    @GetMapping("/attendees/{eventId}")
-    public ResponseEntity<AttendeeListResponseDTO> getEventAttendees(@PathVariable String eventId){
-        AttendeeListResponseDTO attendeeListResponse = this.attendeeService.getEventAttendees(eventId);
-        return ResponseEntity.ok(attendeeListResponse);
+    @PostMapping("/{eventId}/attendees")
+    public ResponseEntity<AttendeeIdDTO> registerAttendee(@PathVariable String eventId ,@RequestBody AttendeeRequestDTO body, UriComponentsBuilder uriComponentsBuilder){
+        AttendeeIdDTO attendeeIdDTO = this.eventService.registerAttendeeOnEvent(eventId, body);
+
+        var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/badge")
+                .buildAndExpand(attendeeIdDTO.attendeeId()).toUri();
+
+        return ResponseEntity.created(uri).body(attendeeIdDTO);
     }
 }
