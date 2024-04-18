@@ -27,6 +27,7 @@ public class EventController{
     }
 
     @GetMapping("/attendees/{eventId}")
+    @CrossOrigin("http://localhost:5173")
     public ResponseEntity<AttendeeListResponseDTO> getEventAttendees(@PathVariable String eventId){
         AttendeeListResponseDTO attendeeListResponse = this.attendeeService.getEventAttendees(eventId);
         return ResponseEntity.ok(attendeeListResponse);
@@ -42,7 +43,9 @@ public class EventController{
     }
 
     @PostMapping("/{eventId}/attendees")
-    public ResponseEntity<AttendeeIdDTO> registerAttendee(@PathVariable String eventId ,@RequestBody AttendeeRequestDTO body, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<AttendeeIdDTO> registerAttendee(@PathVariable String eventId,
+                                                          @RequestBody AttendeeRequestDTO body,
+                                                          UriComponentsBuilder uriComponentsBuilder){
         AttendeeIdDTO attendeeIdDTO = this.eventService.registerAttendeeOnEvent(eventId, body);
 
         var uri = uriComponentsBuilder.path("/attendees/{attendeeId}/badge")
