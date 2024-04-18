@@ -12,7 +12,6 @@ import rocketseat.com.passin.dtos.attendee.AttendeeBadgeResponseDTO;
 import rocketseat.com.passin.dtos.attendee.AttendeeDetailDTO;
 import rocketseat.com.passin.dtos.attendee.AttendeeListResponseDTO;
 import rocketseat.com.passin.repositories.AttendeeRepository;
-import rocketseat.com.passin.repositories.CheckInRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
